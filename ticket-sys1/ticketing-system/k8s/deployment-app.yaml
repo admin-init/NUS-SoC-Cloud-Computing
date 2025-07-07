@@ -15,6 +15,7 @@ spec:
       containers:
       - name: ticket
         image: ticket-app:latest
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000
 ---

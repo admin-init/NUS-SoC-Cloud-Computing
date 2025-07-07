@@ -3,6 +3,7 @@ kind: Ingress
 metadata:
   name: ticket-ingress
 spec:
+  ingressClassName: nginx
   rules:
   - http:
       paths:

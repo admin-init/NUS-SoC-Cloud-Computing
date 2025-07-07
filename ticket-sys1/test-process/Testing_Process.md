@@ -5,6 +5,10 @@
 ```bash
 minikube start
 ```
+```bash
+minikube addons enable ingress # 确保启用了ingress
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.2/deploy/static/provider/cloud/deploy.yaml # 以及确保有可用的ingressClass
+```
 
 ### 2. 启动 Minikube 内部 Docker 环境（打包 image 到其中）
 
@@ -69,6 +73,8 @@ minikube ip
 kubectl exec -it $(kubectl get pods | grep mysql | awk '{print $1}') -- bash
 mysql -u root -p
 # 输入密码：123456
+CREATE DATABASE ticketdb;
+USE ticketdb;
 ```
 
 ### 然后运行以下 SQL 结构
@@ -99,7 +105,9 @@ CREATE TABLE orders (
 ```sql
 INSERT INTO tickets (name, available) VALUES ('Train A - 08:00', 10);
 ```
-
+```sql
+SELECT * FROM tickets; # 检查插入是否成功
+```
 ## 七、测试接口功能（Postman/curl）
 
 ### 注册用户
