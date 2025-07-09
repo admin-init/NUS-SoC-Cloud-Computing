@@ -1,6 +1,6 @@
 # Prerequisite
 
-- Install Java JDK 17+
+- JDK 17+ installed with `JAVA_HOME` configured appropriately
 - [Install Quarkus](https://quarkus.io/get-started/)
 - [Install Maven](https://maven.apache.org/install.html)
 - minikube
@@ -12,3 +12,12 @@
 	``` 
 	> DO NOT change the password as the default password in application.properties is typically yourpassword :).
 ---
+
+# Project Creation
+
+## ticket-management-service
+
+```bash
+quarkus create app com.example.ticket-management-service:ticket-management-service \
+    --extension=quarkus-rest,quarkus-rest-jackson,quarkus-hibernate-orm-panache,quarkus-smallrye-openapi,quarkus-jdbc-postgresql
+```
