@@ -14,6 +14,24 @@
 	> DO NOT change the password as the default password in `application.properties` is literally `yourpassword` :).
 ---
 
+# Build Project
+
+## Operations Management Service
+
+### Live develpoment mode
+
+Use following command to open live develop:
+```bash
+quarkus dev
+```
+Then you can access the [web dev workspace](http:\\localhost:8080) to see configurations.
+And also access the [openapi swagger-ui webpage](http://localhost:8080/q/swagger-ui/) to do simple testing.
+
+### Build
+
+
+---
+
 # Project Creation
 
 ## ticket-management-service
@@ -22,3 +40,4 @@
 quarkus create app com.example.ticket-management-service:ticket-management-service \
     --extension=quarkus-rest,quarkus-rest-jackson,quarkus-hibernate-orm-panache,quarkus-smallrye-openapi,quarkus-jdbc-postgresql
 ```
+---
