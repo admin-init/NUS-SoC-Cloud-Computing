@@ -1,5 +1,7 @@
 package service.management.order;
 
+import service.management.order.dto.TicketDTO;
+
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -10,21 +12,13 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 @RegisterRestClient(configKey = "operations-api")
 public interface ClientOptService {
 
-    @GET
-    @Path("/admin/schedules/search")
-    @Produces("application/json")
-    Response findAvailableSchedules(
-            @QueryParam("departureTime") String departureTimeString,
-            @QueryParam("startStationId") Long startStationId,
-            @QueryParam("endStationId") Long endStationId);
-
-    @GET
-    @Path("/admin/tickets/available")
-    @Produces("application/json")
-    Response checkAvailableTickets(@QueryParam("scheduleId") Long scheduleId);
+    @POST
+    @Path("/admin/tickets/search")
+    @Produces(MediaType.APPLICATION_JSON)
+    TicketDTO searchTicket(@QueryParam("ticketId") Long ticketId);
 
     @POST
     @Path("/admin/tickets/reduce")
     @Produces(MediaType.TEXT_PLAIN)
-    Response reduceTicketAvailability(@QueryParam("scheduleId") Long scheduleId);
+    Response reduceTicketAvailability(@QueryParam("ticketId") Long ticketId);
 }

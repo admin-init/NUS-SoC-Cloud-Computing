@@ -14,29 +14,29 @@ public class EntityOrder extends PanacheEntityBase {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
-    private Integer userId;        
-    private Integer ticketId;     
+    private Long userId;        
+    private Long ticketId;     
     private Integer seatCode;     
     private Integer price;        
     private String status;        // "pending", "paid"
     private LocalDateTime orderDate;  
-    private Integer scheduleId;   
+    private Long scheduleId;   
 
     // === Getters and Setters ===
 
-    public Integer getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(Integer userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
-    public Integer getTicketId() {
+    public Long getTicketId() {
         return ticketId;
     }
 
-    public void setTicketId(Integer ticketId) {
+    public void setTicketId(Long ticketId) {
         this.ticketId = ticketId;
     }
 
@@ -72,11 +72,11 @@ public class EntityOrder extends PanacheEntityBase {
         this.orderDate = orderDate;
     }
 
-    public Integer getScheduleId() {
+    public Long getScheduleId() {
         return scheduleId;
     }
 
-    public void setScheduleId(Integer scheduleId) {
+    public void setScheduleId(Long scheduleId) {
         this.scheduleId = scheduleId;
     }
 }
