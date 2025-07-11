@@ -1,5 +1,7 @@
 package service.management.operations;
 
+import service.management.operations.dto.ScheduleWithTicketDTO;
+
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -82,8 +84,9 @@ public class ResourceOpt {
                 date = localDate.atStartOfDay();
             }
 
-            List<EntitySchedule> schedules = searchService.findAvailableSchedules(date, startStationId, endStationId);
-            return Response.ok(schedules).build();
+            List<ScheduleWithTicketDTO> schedulesWITHtickets = searchService.findAvailableSchedules(date, startStationId, endStationId);
+
+            return Response.ok(schedulesWITHtickets).build();
 
         } catch (Exception e) {
             return Response.status(Response.Status.BAD_REQUEST)
@@ -95,6 +98,7 @@ public class ResourceOpt {
 
     @POST
     @Path("/tickets/add")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response addTicket(EntityTicket ticket) {
         EntityTicket saved = adminService.addTicket(ticket);
         return Response.status(Response.Status.CREATED).entity(saved).build();
@@ -117,10 +121,18 @@ public class ResourceOpt {
     }
 
     @POST
+    @Path("/tickets/search")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response searchTicket(@QueryParam("ticketId") Long ticketId) {
+        EntityTicket found = serviceTicket.searchTicket(ticketId);
+        return Response.status(Response.Status.CREATED).entity(found).build();
+    }
+
+    @POST
     @Path("/tickets/reduce")
     @Produces(MediaType.TEXT_PLAIN)
-    public Response reduceTicketAvailability(@QueryParam("scheduleId") Long scheduleId) {
-        serviceTicket.reduceTicketAvailability(scheduleId);
+    public Response reduceTicketAvailability(@QueryParam("ticketId") Long ticketId) {
+        serviceTicket.reduceTicketAvailability(ticketId);
         return Response.ok("TicketAvailability Reduced Successfully").build();
     }
 

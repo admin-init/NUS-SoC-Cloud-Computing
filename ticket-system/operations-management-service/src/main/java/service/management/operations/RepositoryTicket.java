@@ -12,6 +12,8 @@ public class RepositoryTicket implements PanacheRepository<EntityTicket> {
         return EntityTicket.list("ScheduleID", scheduleId);
     }
 
+    // public EntityTicket findById(Long id);
+
     public boolean existsBySchedule(Long scheduleId) {
         return count("schedule.id = ?1", scheduleId) > 0;
     }

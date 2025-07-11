@@ -68,9 +68,9 @@ public class ServiceTicket {
     /**
      * 扣减票数（模拟购票）
      */
-    public boolean reduceTicketAvailability(Long scheduleId) {
+    public boolean reduceTicketAvailability(Long ticketId) {
         int quantity = 1;
-        EntityTicket ticket = ticketRepo.findBySchedule(scheduleId);
+        EntityTicket ticket = ticketRepo.findById(ticketId);
         if (ticket == null || ticket.getAvailableAmount() < quantity) {
             return false; // 无票或票不够
         }
@@ -78,5 +78,10 @@ public class ServiceTicket {
         ticket.setAvailableAmount(ticket.getAvailableAmount() - quantity);
         ticketRepo.getEntityManager().merge(ticket);
         return true;
+    }
+
+    public EntityTicket searchTicket(Long ticketId) {
+        EntityTicket ticket = ticketRepo.findById(ticketId);
+        return ticket;
     }
 }

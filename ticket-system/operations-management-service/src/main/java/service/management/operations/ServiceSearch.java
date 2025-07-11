@@ -1,5 +1,7 @@
 package service.management.operations;
 
+import service.management.operations.dto.ScheduleWithTicketDTO;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import jakarta.inject.Inject;
@@ -28,8 +30,28 @@ public class ServiceSearch {
     RepositoryTicket ticketRepo;
 
 
-    public List<EntitySchedule> findAvailableSchedules(LocalDateTime date, Long startStationId, Long endStationId) {
-        // 可以在这里加逻辑判断余票是否充足等
-        return scheduleRepo.findByDateAndStations(date, startStationId, endStationId);
+    public List<ScheduleWithTicketDTO> findAvailableSchedules(LocalDateTime date, Long startStationId, Long endStationId) {
+        List<EntitySchedule> schedules = scheduleRepo.findByDateAndStations(date, startStationId, endStationId);
+
+        return schedules.stream()
+                    .map(schedule -> {
+                        ScheduleWithTicketDTO dto = new ScheduleWithTicketDTO();
+
+                        // 使用 getter 方法获取字段值
+                        dto.scheduleId = schedule.getId();
+                        dto.departureTime = schedule.getDepartureTime();
+                        dto.arrivalTime = schedule.getArrivalTime();
+                        dto.startStation = schedule.getRoute().getStartStation().getName();  // 从 RouteDTO 获取
+                        dto.endStation = schedule.getRoute().getEndStation().getName();      // 从 RouteDTO 获取
+
+                        EntityTicket ticket = ticketRepo.findBySchedule(schedule.getId());
+                        int available = ticket != null ? ticket.getAvailableAmount() : 0;
+                        dto.availableTickets = available;
+                        dto.ticketId = ticket.getId();
+
+                        return dto;
+                    })
+                    .toList();
     }
+
 }

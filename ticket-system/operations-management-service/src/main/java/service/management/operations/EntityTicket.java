@@ -23,6 +23,14 @@ public class EntityTicket extends PanacheEntityBase {
     private Integer availableAmount; 
     private Integer price;          
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public EntitySchedule getSchedule() {
         return schedule;
     }
