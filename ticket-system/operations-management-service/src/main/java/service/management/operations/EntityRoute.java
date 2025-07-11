@@ -2,29 +2,43 @@ package service.management.operations;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
 
-
-/**
- * Example JPA entity defined as a Panache Entity.
- * An ID field of Long type is provided, if you want to define your own ID field extends <code>PanacheEntityBase</code> instead.
- *
- * This uses the active record pattern, you can also use the repository pattern instead:
- * .
- *
- * Usage (more example on the documentation)
- *
- * {@code
- *     public void doSomething() {
- *         MyEntity entity1 = new MyEntity();
- *         entity1.field = "field-1";
- *         entity1.persist();
- *
- *         List<MyEntity> entities = MyEntity.listAll();
- *     }
- * }
- */
 @Entity
 public class EntityRoute extends PanacheEntity {
-    public String name;
-    public String description;
+
+    @ManyToOne
+    @JoinColumn(name = "StartStationID")
+    private EntityStation startStation;
+
+    @ManyToOne
+    @JoinColumn(name = "EndStationID")
+    private EntityStation endStation;
+
+    private Integer distance;
+
+    public EntityStation getStartStation() {
+        return startStation;
+    }
+
+    public void setStartStation(EntityStation startStation) {
+        this.startStation = startStation;
+    }
+
+    public EntityStation getEndStation() {
+        return endStation;
+    }
+
+    public void setEndStation(EntityStation endStation) {
+        this.endStation = endStation;
+    }
+
+    public Integer getDistance() {
+        return distance;
+    }
+
+    public void setDistance(Integer distance) {
+        this.distance = distance;
+    }
 }
