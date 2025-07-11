@@ -1,0 +1,76 @@
+package service.management.order;
+
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import jakarta.persistence.Entity;
+import java.time.LocalDate;
+
+@Entity
+public class EntityOrder extends PanacheEntity {
+
+    private String userId;        
+    private Integer ticketId;     
+    private Integer seatCode;     
+    private Integer price;        
+    private String status;        // "pending", "paid"
+    private LocalDate orderDate;  
+    private Integer scheduleId;   
+
+    // === Getters and Setters ===
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public Integer getTicketId() {
+        return ticketId;
+    }
+
+    public void setTicketId(Integer ticketId) {
+        this.ticketId = ticketId;
+    }
+
+    public Integer getSeatCode() {
+        return seatCode;
+    }
+
+    public void setSeatCode(Integer seatCode) {
+        this.seatCode = seatCode;
+    }
+
+    public Integer getPrice() {
+        return price;
+    }
+
+    public void setPrice(Integer price) {
+        this.price = price;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public LocalDate getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(LocalDate orderDate) {
+        this.orderDate = orderDate;
+    }
+
+    // ✅ 新增的 scheduleId 的 getter/setter
+    public Integer getScheduleId() {
+        return scheduleId;
+    }
+
+    public void setScheduleId(Integer scheduleId) {
+        this.scheduleId = scheduleId;
+    }
+}

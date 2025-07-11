@@ -40,6 +40,12 @@
             <artifactId>quarkus-rest-jackson</artifactId>
         </dependency>
 
+        <!-- REST Client Support -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-rest-client-jackson</artifactId>
+        </dependency>
+
         <!-- Security -->
         <dependency>
             <groupId>io.quarkus</groupId>
