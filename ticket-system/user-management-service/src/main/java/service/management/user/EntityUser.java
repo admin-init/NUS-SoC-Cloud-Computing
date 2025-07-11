@@ -25,8 +25,8 @@ import jakarta.persistence.Entity;
  */
 @Entity
 public class EntityUser extends PanacheEntity {
-    public String username;
-    public String passwordHash;
-    public String email;
-    public String role = "USER"; // 默认是普通用户
+    public String Name;
+    public String IdentityCode;
+    public String Contact;
+    public String Password;
 }

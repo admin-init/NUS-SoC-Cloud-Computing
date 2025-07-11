@@ -7,7 +7,7 @@ import java.time.LocalDate;
 @Entity
 public class EntityOrder extends PanacheEntity {
 
-    private String userId;        
+    private Integer userId;        
     private Integer ticketId;     
     private Integer seatCode;     
     private Integer price;        
@@ -17,11 +17,11 @@ public class EntityOrder extends PanacheEntity {
 
     // === Getters and Setters ===
 
-    public String getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
@@ -65,7 +65,6 @@ public class EntityOrder extends PanacheEntity {
         this.orderDate = orderDate;
     }
 
-    // ✅ 新增的 scheduleId 的 getter/setter
     public Integer getScheduleId() {
         return scheduleId;
     }

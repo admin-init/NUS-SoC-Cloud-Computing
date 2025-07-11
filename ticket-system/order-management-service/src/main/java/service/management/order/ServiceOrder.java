@@ -27,7 +27,7 @@ public class ServiceOrder {
     @RestClient
     ClientOpt optClient;
 
-    public EntityOrder createOrder(String userId, Integer scheduleId) {
+    public EntityOrder createOrder(Integer userId, Integer scheduleId) {
         // 1. 获取余票信息
         List<TicketDTO> tickets = optClient.getTicketsBySchedule(scheduleId);
 

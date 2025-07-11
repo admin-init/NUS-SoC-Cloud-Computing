@@ -1,4 +1,4 @@
-package service.management.ticket;
+package service.management.user;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Entity;
@@ -24,17 +24,7 @@ import jakarta.persistence.Entity;
  * }
  */
 @Entity
-public class EntityTicket extends PanacheEntity {
-    public String title;
-    public String description;
-    public String status = "OPEN";
-
-    @ManyToOne
-    public User creator;
-
-    @ManyToOne
-    public User assignedTo;
-
-    public Date createdAt = new Date();
-    public Date updatedAt = new Date();
+public class EntityAdmin extends PanacheEntity {
+    public String Name;
+    public String Password;
 }
