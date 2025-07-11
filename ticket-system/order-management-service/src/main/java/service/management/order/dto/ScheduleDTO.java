@@ -1,7 +1,7 @@
 // src/main/java/com/example/order/dto/
 package service.management.order.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class ScheduleDTO {
 
@@ -9,15 +9,15 @@ public class ScheduleDTO {
     private String scheduleCode;
     private RouteDTO route;
     private TrainDTO train;
-    private LocalDate departureTime;
-    private LocalDate arrivalTime;
+    private LocalDateTime departureTime;
+    private LocalDateTime arrivalTime;
 
     // Constructors, Getters and Setters
 
     public ScheduleDTO() {}
 
     public ScheduleDTO(Long id, String scheduleCode, RouteDTO route, TrainDTO train,
-                       LocalDate departureTime, LocalDate arrivalTime) {
+                       LocalDateTime departureTime, LocalDateTime arrivalTime) {
         this.id = id;
         this.scheduleCode = scheduleCode;
         this.route = route;
@@ -58,19 +58,19 @@ public class ScheduleDTO {
         this.train = train;
     }
 
-    public LocalDate getDepartureTime() {
+    public LocalDateTime getDepartureTime() {
         return departureTime;
     }
 
-    public void setDepartureTime(LocalDate departureTime) {
+    public void setDepartureTime(LocalDateTime departureTime) {
         this.departureTime = departureTime;
     }
 
-    public LocalDate getArrivalTime() {
+    public LocalDateTime getArrivalTime() {
         return arrivalTime;
     }
 
-    public void setArrivalTime(LocalDate arrivalTime) {
+    public void setArrivalTime(LocalDateTime arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
 }

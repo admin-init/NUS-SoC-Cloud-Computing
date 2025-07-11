@@ -2,10 +2,19 @@ package service.management.order;
 
 import service.management.order.dto.ScheduleDTO;
 import service.management.order.dto.TicketDTO;
+import service.management.order.dto.ScheduleWithTicketDTO;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import jakarta.inject.Inject;
+
+import jakarta.inject.Inject;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.GenericType;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
@@ -23,33 +32,60 @@ public class ServiceOrder {
         return order;
     }
 
+    public EntityOrder getOrderByIdAndUserId(Long orderId, Long userId) {
+        return orderRepo.findByIdAndUserId(orderId, userId);
+    }
+
+    public List<EntityOrder> getOrdersByUserId(Long userId) {
+        return orderRepo.findByUserId(userId);
+    }
+
     @Inject
     @RestClient
-    ClientOpt optClient;
+    ClientOptService optServiceClient;
 
-    public EntityOrder createOrder(Integer userId, Integer scheduleId) {
-        // 1. 获取余票信息
-        List<TicketDTO> tickets = optClient.getTicketsBySchedule(scheduleId);
+    public List<ScheduleWithTicketDTO> searchSchedulesWithTickets(
+            String departureTimeString, Long startStationId, Long endStationId) {
 
-        if (tickets == null || tickets.isEmpty()) {
-            throw new RuntimeException("No tickets available for schedule: " + scheduleId);
+        Response response = optServiceClient.findAvailableSchedules(
+                departureTimeString, startStationId, endStationId);
+
+        if (response.getStatus() == 200) {
+            List<ScheduleDTO> schedules = response.readEntity(new GenericType<List<ScheduleDTO>>() {});
+
+            return schedules.stream()
+                    .map(schedule -> {
+                        ScheduleWithTicketDTO dto = new ScheduleWithTicketDTO();
+
+                        // 使用 getter 方法获取字段值
+                        dto.scheduleId = schedule.getId();
+                        dto.departureTime = schedule.getDepartureTime();
+                        dto.arrivalTime = schedule.getArrivalTime();
+                        dto.startStation = schedule.getRoute().getStartStation().getName();  // 从 RouteDTO 获取
+                        dto.endStation = schedule.getRoute().getEndStation().getName();      // 从 RouteDTO 获取
+
+                        try {
+                            Response ticketResponse = optServiceClient.checkAvailableTickets(dto.scheduleId);
+
+                            if (ticketResponse.getStatus() == 200) {
+                                JsonNode jsonNode = ticketResponse.readEntity(JsonNode.class);
+                                dto.availableTickets = jsonNode.get("available").asInt();
+                            } else {
+                                dto.availableTickets = -1; // 查询失败
+                            }
+                        } catch (Exception e) {
+                            System.err.println("Error fetching available tickets for schedule ID: " + dto.scheduleId);
+                            e.printStackTrace(); // 打印异常堆栈
+                            dto.availableTickets = -2; // 异常处理
+                        }
+
+                        return dto;
+                    })
+                    .toList();
+
+        } else {
+            System.out.println("Failed to fetch schedules: " + response.readEntity(String.class));
+            return List.of();
         }
-
-        // 2. 假设我们取第一张票的价格作为参考
-        Integer price = tickets.get(0).getPrice();
-
-        // 3. 创建订单
-        EntityOrder order = new EntityOrder();
-        order.setUserId(userId);
-        order.setScheduleId(scheduleId);
-        order.setPrice(price);
-        order.setStatus("pending");
-
-        orderRepo.persist(order);
-
-        // TODO: 如果需要，可以发送消息通知 Operations Service 扣减库存
-
-        return order;
     }
 }
-

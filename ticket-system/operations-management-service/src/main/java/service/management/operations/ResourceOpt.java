@@ -116,4 +116,12 @@ public class ResourceOpt {
         return Response.ok().entity("{\"available\": " + available + "}").build();
     }
 
+    @POST
+    @Path("/tickets/reduce")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response reduceTicketAvailability(@QueryParam("scheduleId") Long scheduleId) {
+        serviceTicket.reduceTicketAvailability(scheduleId);
+        return Response.ok("TicketAvailability Reduced Successfully").build();
+    }
+
 }

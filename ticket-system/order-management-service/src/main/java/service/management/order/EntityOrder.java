@@ -1,18 +1,25 @@
 package service.management.order;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.Entity;
-import java.time.LocalDate;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import java.time.LocalDateTime;
 
 @Entity
-public class EntityOrder extends PanacheEntity {
+public class EntityOrder extends PanacheEntityBase {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
 
     private Integer userId;        
     private Integer ticketId;     
     private Integer seatCode;     
     private Integer price;        
     private String status;        // "pending", "paid"
-    private LocalDate orderDate;  
+    private LocalDateTime orderDate;  
     private Integer scheduleId;   
 
     // === Getters and Setters ===
@@ -57,11 +64,11 @@ public class EntityOrder extends PanacheEntity {
         this.status = status;
     }
 
-    public LocalDate getOrderDate() {
+    public LocalDateTime getOrderDate() {
         return orderDate;
     }
 
-    public void setOrderDate(LocalDate orderDate) {
+    public void setOrderDate(LocalDateTime orderDate) {
         this.orderDate = orderDate;
     }
 

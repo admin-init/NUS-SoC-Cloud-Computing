@@ -68,7 +68,8 @@ public class ServiceTicket {
     /**
      * 扣减票数（模拟购票）
      */
-    public boolean reduceTicketAvailability(Long scheduleId, int quantity) {
+    public boolean reduceTicketAvailability(Long scheduleId) {
+        int quantity = 1;
         EntityTicket ticket = ticketRepo.findBySchedule(scheduleId);
         if (ticket == null || ticket.getAvailableAmount() < quantity) {
             return false; // 无票或票不够
