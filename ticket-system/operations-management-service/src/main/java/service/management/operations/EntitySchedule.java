@@ -1,7 +1,10 @@
 package service.management.operations;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 
@@ -9,7 +12,11 @@ import java.time.LocalDateTime;
 
 
 @Entity
-public class EntitySchedule extends PanacheEntity {
+public class EntitySchedule extends PanacheEntityBase {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
 
     private String scheduleCode;
 

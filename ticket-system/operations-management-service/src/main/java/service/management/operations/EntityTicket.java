@@ -1,13 +1,20 @@
 package service.management.operations;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
 
 @Entity
-public class EntityTicket extends PanacheEntity {
+public class EntityTicket extends PanacheEntityBase {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
+    
     @ManyToOne
     @JoinColumn(name = "ScheduleID")
     private EntitySchedule schedule;

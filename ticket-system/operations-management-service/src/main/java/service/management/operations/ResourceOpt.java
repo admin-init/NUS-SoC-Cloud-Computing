@@ -62,13 +62,6 @@ public class ResourceOpt {
         return Response.status(Response.Status.CREATED).entity(saved).build();
     }
 
-    @POST
-    @Path("/tickets/add")
-    public Response addTicket(EntityTicket ticket) {
-        EntityTicket saved = adminService.addTicket(ticket);
-        return Response.status(Response.Status.CREATED).entity(saved).build();
-    }
-
     @GET
     @Path("/schedules/search")
     @Produces(MediaType.APPLICATION_JSON)
@@ -101,6 +94,13 @@ public class ResourceOpt {
 
 
     @POST
+    @Path("/tickets/add")
+    public Response addTicket(EntityTicket ticket) {
+        EntityTicket saved = adminService.addTicket(ticket);
+        return Response.status(Response.Status.CREATED).entity(saved).build();
+    }
+
+    @POST
     @Path("/tickets/generate")
     @Produces(MediaType.TEXT_PLAIN)
     public Response generateTickets() {
@@ -115,4 +115,5 @@ public class ResourceOpt {
         Integer available = serviceTicket.getAvailableTickets(scheduleId);
         return Response.ok().entity("{\"available\": " + available + "}").build();
     }
+
 }
