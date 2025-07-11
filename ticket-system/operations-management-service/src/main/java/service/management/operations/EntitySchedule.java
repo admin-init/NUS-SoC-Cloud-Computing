@@ -4,7 +4,9 @@ import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
-import java.time.LocalDate;
+
+import java.time.LocalDateTime;
+
 
 @Entity
 public class EntitySchedule extends PanacheEntity {
@@ -19,8 +21,8 @@ public class EntitySchedule extends PanacheEntity {
     @JoinColumn(name = "TrainID")
     private EntityTrain train;
 
-    private LocalDate departureTime;
-    private LocalDate arrivalTime;
+    private LocalDateTime departureTime;
+    private LocalDateTime arrivalTime;
 
     public String getScheduleCode() {
         return scheduleCode;
@@ -46,19 +48,19 @@ public class EntitySchedule extends PanacheEntity {
         this.train = train;
     }
 
-    public LocalDate getDepartureTime() {
+    public LocalDateTime getDepartureTime() {
         return departureTime;
     }
 
-    public void setDepartureTime(LocalDate departureTime) {
+    public void setDepartureTime(LocalDateTime departureTime) {
         this.departureTime = departureTime;
     }
 
-    public LocalDate getArrivalTime() {
+    public LocalDateTime getArrivalTime() {
         return arrivalTime;
     }
 
-    public void setArrivalTime(LocalDate arrivalTime) {
+    public void setArrivalTime(LocalDateTime arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
 }

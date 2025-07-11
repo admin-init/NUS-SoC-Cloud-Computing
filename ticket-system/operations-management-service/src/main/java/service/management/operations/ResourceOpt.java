@@ -6,6 +6,9 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 /*
 *    @Path("/hello")
 *    public class GreetingResource {
@@ -67,22 +70,42 @@ public class ResourceOpt {
     }
 
     @GET
-    @Path("/search")
+    @Path("/schedules/search")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<EntitySchedule> findAvailableSchedules(
-        @QueryParam("date") String date,
-        @QueryParam("startStationId") Integer startStationId,
-        @QueryParam("endStationId") Integer endStationId) {
+    public Response findAvailableSchedules(
+            @QueryParam("departureTime") String departureTimeString,
+            @QueryParam("startStationId") Long startStationId,
+            @QueryParam("endStationId") Long endStationId) {
 
-        return searchService.findAvailableSchedules(date, startStationId, endStationId);
+        try {
+            LocalDateTime date;
+
+            if (departureTimeString.contains(" ")) {
+                DateTimeFormatter fullFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                date = LocalDateTime.parse(departureTimeString, fullFormatter);
+            } else {
+                DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                LocalDate localDate = LocalDate.parse(departureTimeString, dateFormatter);
+                date = localDate.atStartOfDay();
+            }
+
+            List<EntitySchedule> schedules = searchService.findAvailableSchedules(date, startStationId, endStationId);
+            return Response.ok(schedules).build();
+
+        } catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Invalid date format. Please use yyyy-MM-dd [HH:mm:ss]")
+                    .build();
+        }
     }
+
 
     @POST
     @Path("/tickets/generate")
     @Produces(MediaType.TEXT_PLAIN)
     public Response generateTickets() {
         serviceTicket.generateTicketsForSchedules();
-        return Response.ok("车票生成完成！").build();
+        return Response.ok("Ticket Generated Successfully").build();
     }
 
     @GET

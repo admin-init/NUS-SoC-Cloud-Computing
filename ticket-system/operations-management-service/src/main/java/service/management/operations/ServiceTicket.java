@@ -44,7 +44,7 @@ public class ServiceTicket {
             ticketRepo.persist(ticket); // 保存到数据库
         }
 
-        System.out.println("✅ 已为 " + schedules.size() + " 个班次生成车票");
+        System.out.println("✅ Generated " + schedules.size() + "schedules' tickets");
     }
 
     /**

@@ -8,7 +8,7 @@ import java.util.List;
 @ApplicationScoped
 public class RepositoryTicket implements PanacheRepository<EntityTicket> {
 
-    public List<EntityTicket> findByScheduleId(Integer scheduleId) {
+    public List<EntityTicket> findByScheduleId(Long scheduleId) {
         return EntityTicket.list("ScheduleID", scheduleId);
     }
 

@@ -5,6 +5,8 @@ import jakarta.transaction.Transactional;
 import jakarta.inject.Inject;
 
 import java.util.List;
+import java.time.LocalDateTime;
+
 
 @ApplicationScoped
 @Transactional
@@ -26,7 +28,7 @@ public class ServiceSearch {
     RepositoryTicket ticketRepo;
 
 
-    public List<EntitySchedule> findAvailableSchedules(String date, Integer startStationId, Integer endStationId) {
+    public List<EntitySchedule> findAvailableSchedules(LocalDateTime date, Long startStationId, Long endStationId) {
         // 可以在这里加逻辑判断余票是否充足等
         return scheduleRepo.findByDateAndStations(date, startStationId, endStationId);
     }
