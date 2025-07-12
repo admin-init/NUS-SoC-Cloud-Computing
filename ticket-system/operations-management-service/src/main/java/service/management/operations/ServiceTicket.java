@@ -31,7 +31,7 @@ public class ServiceTicket {
             EntityTicket ticket = new EntityTicket();
 
             // 设置票价
-            Integer price = calculatePriceBasedOnDistance(schedule);
+            Double price = calculatePriceBasedOnDistance(schedule);
 
             // 获取列车座位数作为总票数
             int totalSeats = schedule.getTrain().getSeats();
@@ -48,13 +48,13 @@ public class ServiceTicket {
     }
 
     /**
-     * 根据线路距离计算票价（每公里5元）
+     * Price cclculate (0.5 per km）
      */
-    private Integer calculatePriceBasedOnDistance(EntitySchedule schedule) {
+    private Double calculatePriceBasedOnDistance(EntitySchedule schedule) {
         if (schedule.getRoute() != null && schedule.getRoute().getDistance() != null) {
-            return schedule.getRoute().getDistance() * 5; // 每公里 5 元
+            return schedule.getRoute().getDistance() * 0.5; //  0.5 per km
         }
-        return 100; // 默认票价
+        return 100.; // 默认票价
     }
 
     /**

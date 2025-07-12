@@ -21,7 +21,7 @@ public class EntityTicket extends PanacheEntityBase {
 
     private Integer amount;         
     private Integer availableAmount; 
-    private Integer price;          
+    private Double price;          
 
     public Long getId() {
         return id;
@@ -55,11 +55,11 @@ public class EntityTicket extends PanacheEntityBase {
         this.availableAmount = availableAmount;
     }
 
-    public Integer getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(Integer price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 }

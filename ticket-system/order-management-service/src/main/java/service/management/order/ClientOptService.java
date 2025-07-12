@@ -13,7 +13,7 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 public interface ClientOptService {
 
     @POST
-    @Path("/admin/tickets/search")
+    @Path("/opt/tickets/search")
     @Produces(MediaType.APPLICATION_JSON)
     TicketDTO searchTicket(@QueryParam("ticketId") Long ticketId);
 

@@ -7,13 +7,13 @@ public class TicketDTO {
     private ScheduleDTO schedule;
     private Integer amount;
     private Integer availableAmount;
-    private Integer price;
+    private Double price;
 
     // Constructors, Getters and Setters
 
     public TicketDTO() {}
 
-    public TicketDTO(Long id, ScheduleDTO schedule, Integer amount, Integer availableAmount, Integer price) {
+    public TicketDTO(Long id, ScheduleDTO schedule, Integer amount, Integer availableAmount, Double price) {
         this.id = id;
         this.schedule = schedule;
         this.amount = amount;
@@ -53,11 +53,11 @@ public class TicketDTO {
         this.availableAmount = availableAmount;
     }
 
-    public Integer getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(Integer price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 }

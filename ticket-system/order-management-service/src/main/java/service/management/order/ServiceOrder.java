@@ -18,6 +18,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.util.List;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @ApplicationScoped
 @Transactional
@@ -56,6 +59,7 @@ public class ServiceOrder {
         createdOrder.setScheduleId(ticketDTO.getSchedule().getId());
         createdOrder.setStatus("Finished");
         createdOrder.setPrice(ticketDTO.getPrice());
+        createdOrder.setOrderDate(LocalDateTime.now());
 
         addOrder(createdOrder);
 

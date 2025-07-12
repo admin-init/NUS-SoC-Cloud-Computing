@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS public.entityticket (
     id BIGSERIAL PRIMARY KEY,
     amount INTEGER,
     availableamount INTEGER,
-    price INTEGER,
+    price DOUBLE PRECISION,
     scheduleid BIGINT REFERENCES public.entityschedule(id)
 );
 

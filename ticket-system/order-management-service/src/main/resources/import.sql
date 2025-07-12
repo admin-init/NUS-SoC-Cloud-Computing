@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS public.entityuser (
 -- entityorder
 CREATE TABLE IF NOT EXISTS public.entityorder (
     id BIGSERIAL PRIMARY KEY,
-    price INTEGER,
+    price DOUBLE PRECISION,
     scheduleid INTEGER,
     seatcode INTEGER,
     ticketid INTEGER,

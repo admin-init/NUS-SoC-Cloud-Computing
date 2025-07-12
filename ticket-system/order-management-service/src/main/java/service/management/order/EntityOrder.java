@@ -17,7 +17,7 @@ public class EntityOrder extends PanacheEntityBase {
     private Long userId;        
     private Long ticketId;     
     private Integer seatCode;     
-    private Integer price;        
+    private Double price;        
     private String status;        // "pending", "paid"
     private LocalDateTime orderDate;  
     private Long scheduleId;   
@@ -48,11 +48,11 @@ public class EntityOrder extends PanacheEntityBase {
         this.seatCode = seatCode;
     }
 
-    public Integer getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(Integer price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 

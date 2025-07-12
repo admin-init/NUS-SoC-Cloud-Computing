@@ -23,46 +23,14 @@ import java.time.format.DateTimeFormatter;
 *    }
 */
 
-@Path("/admin")
-// @RolesAllowed("ADMIN")
+@Path("/opt")
 public class ResourceOpt {
-
-    @Inject
-    ServiceAdmin adminService;
 
     @Inject
     ServiceSearch searchService;
 
     @Inject
-    ServiceTicket serviceTicket;
-
-    @POST
-    @Path("/stations/add")
-    public Response addStation(EntityStation station) {
-        EntityStation saved = adminService.addStation(station);
-        return Response.status(Response.Status.CREATED).entity(saved).build();
-    }
-
-    @POST
-    @Path("/trains/add")
-    public Response addTrain(EntityTrain train) {
-        EntityTrain saved = adminService.addTrain(train);
-        return Response.status(Response.Status.CREATED).entity(saved).build();
-    }
-
-    @POST
-    @Path("/routes/add")
-    public Response addRoute(EntityRoute route) {
-        EntityRoute saved = adminService.addRoute(route);
-        return Response.status(Response.Status.CREATED).entity(saved).build();
-    }
-
-    @POST
-    @Path("/schedules/add") 
-    public Response addSchedule(EntitySchedule schedule) {
-        EntitySchedule saved = adminService.addSchedule(schedule);
-        return Response.status(Response.Status.CREATED).entity(saved).build();
-    }
+    ServiceTicket ticketService;
 
     @GET
     @Path("/schedules/search")
@@ -95,45 +63,19 @@ public class ResourceOpt {
         }
     }
 
-
     @POST
-    @Path("/tickets/add")
+    @Path("/tickets/search")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addTicket(EntityTicket ticket) {
-        EntityTicket saved = adminService.addTicket(ticket);
-        return Response.status(Response.Status.CREATED).entity(saved).build();
-    }
-
-    @POST
-    @Path("/tickets/generate")
-    @Produces(MediaType.TEXT_PLAIN)
-    public Response generateTickets() {
-        serviceTicket.generateTicketsForSchedules();
-        return Response.ok("Ticket Generated Successfully").build();
+    public Response searchTicket(@QueryParam("ticketId") Long ticketId) {
+        EntityTicket found = ticketService.searchTicket(ticketId);
+        return Response.status(Response.Status.CREATED).entity(found).build();
     }
 
     @GET
     @Path("/tickets/available")
     @Produces(MediaType.APPLICATION_JSON)
     public Response checkAvailableTickets(@QueryParam("scheduleId") Long scheduleId) {
-        Integer available = serviceTicket.getAvailableTickets(scheduleId);
+        Integer available = ticketService.getAvailableTickets(scheduleId);
         return Response.ok().entity("{\"available\": " + available + "}").build();
     }
-
-    @POST
-    @Path("/tickets/search")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response searchTicket(@QueryParam("ticketId") Long ticketId) {
-        EntityTicket found = serviceTicket.searchTicket(ticketId);
-        return Response.status(Response.Status.CREATED).entity(found).build();
-    }
-
-    @POST
-    @Path("/tickets/reduce")
-    @Produces(MediaType.TEXT_PLAIN)
-    public Response reduceTicketAvailability(@QueryParam("ticketId") Long ticketId) {
-        serviceTicket.reduceTicketAvailability(ticketId);
-        return Response.ok("TicketAvailability Reduced Successfully").build();
-    }
-
 }
