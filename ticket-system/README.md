@@ -29,6 +29,13 @@ And also access the [openapi swagger-ui webpage](http://localhost:8080/q/swagger
 
 ### Build
 
+```bash
+quarkus build --native -Dquarkus.native.container-build=true -Dquarkus.native.container-runtime=docker
+```
+```bash
+eval $(minikube docker-env)
+docker build -f src/main/docker/Dockerfile.native-micro -t ticket-system/<service> .
+```
 
 ---
 
