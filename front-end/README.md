@@ -1,5 +1,7 @@
 # README
 
+**镜像在dockerhub上：freeemperor/vue-frontend**
+
 这个项目已经构建完毕，已经把它push到我们的仓库了。
 
 dist是vue3打包后的文件夹，初始的项目文件夹过大没办法push上仓库。
