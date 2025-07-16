@@ -37,6 +37,17 @@ eval $(minikube docker-env)
 docker build -f src/main/docker/Dockerfile.native-micro -t ticket-system/<service> .
 ```
 
+# Kubenetes
+
+## client-go
+
+```bash
+go run main.go --action=create
+```
+```bash
+go run main.go --action=delete
+```
+
 ---
 
 # Database

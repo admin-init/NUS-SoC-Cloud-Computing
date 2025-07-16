@@ -80,8 +80,14 @@ public class ResourceAdmin {
     @Path("/tickets/reduce")
     @Produces(MediaType.TEXT_PLAIN)
     public Response reduceTicketAvailability(@QueryParam("ticketId") Long ticketId) {
-        ticketService.reduceTicketAvailability(ticketId);
-        return Response.ok("TicketAvailability Reduced Successfully").build();
+        boolean success = ticketService.reduceTicketAvailability(ticketId);
+        if (success) {
+            return Response.ok("Ticket Availability Reduced Successfully").build();
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST)
+                        .entity("Error: Not enough tickets available or ticket does not exist.")
+                        .build();
+        }
     }
 
 }

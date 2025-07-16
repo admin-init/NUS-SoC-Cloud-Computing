@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Version;
 
 @Entity
 public class EntityTicket extends PanacheEntityBase {
@@ -22,6 +23,9 @@ public class EntityTicket extends PanacheEntityBase {
     private Integer amount;         
     private Integer availableAmount; 
     private Double price;          
+
+//    @Version
+//    public int version; // 乐观锁字段（备用机制
 
     public Long getId() {
         return id;

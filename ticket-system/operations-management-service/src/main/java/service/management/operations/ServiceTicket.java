@@ -3,6 +3,9 @@ package service.management.operations;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.persistence.LockModeType;
+
+import org.jboss.logging.Logger;
 
 import java.util.List;
 
@@ -68,15 +71,21 @@ public class ServiceTicket {
     /**
      * 扣减票数（模拟购票）
      */
+    @Inject
+    Logger logger;
+
+    @Transactional
     public boolean reduceTicketAvailability(Long ticketId) {
         int quantity = 1;
-        EntityTicket ticket = ticketRepo.findById(ticketId);
+        EntityTicket ticket = ticketRepo.findByIdWithLock(ticketId);
         if (ticket == null || ticket.getAvailableAmount() < quantity) {
-            return false; // 无票或票不够
+            logger.warn("Ticket unavailable or insufficient quantity for ID: " + ticketId);
+            return false;
         }
 
-        ticket.setAvailableAmount(ticket.getAvailableAmount() - quantity);
-        ticketRepo.getEntityManager().merge(ticket);
+        int before = ticket.getAvailableAmount();
+        ticket.setAvailableAmount(before - quantity);
+        logger.info("Ticket ID " + ticketId + " sold. Before: " + before + ", After: " + (before - 1));
         return true;
     }
 
