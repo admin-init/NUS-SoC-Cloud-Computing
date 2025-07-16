@@ -1,0 +1,18 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: operations-management-service-scaledobject
+  namespace: default
+spec:
+  scaleTargetRef:
+    name: operations-management-service 
+  minReplicaCount: 1
+  maxReplicaCount: 10
+  triggers:
+    - type: prometheus
+      metadata:
+        serverAddress: http://kube-prometheus-stack-prometheus.monitoring.svc:9090
+        query: |
+          sum(rate(nginx_ingress_controller_nginx_process_requests_total{job="ingress-nginx-controller-metrics"}[2m])) by (ingress)
+        threshold: '50'  # 每个副本平均处理请求数量上限
+        activationThreshold: '5'  # 当请求达到这个阈值时开始扩容x

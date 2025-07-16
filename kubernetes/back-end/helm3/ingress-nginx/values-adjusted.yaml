@@ -1,0 +1,29 @@
+service:
+  enabled: true
+  external:
+    enabled: true
+  type: LoadBalancer
+  ports:
+    # 修改 HTTP 端口：原 80 → 新 8080
+    http: 8080
+    # 修改 HTTPS 端口：原 443 → 新 8443
+    https: 8443
+
+metrics:
+  enabled: true
+  service:
+    enabled: true
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "10254"
+  serviceMonitor:
+    enabled: true
+    scrapeInterval: 30s
+    additionalLabels: # {}
+      release: kube-prometheus-stack
+  # prometheusRule:
+  #   enabled: true
+
+controller:
+  admissionWebhooks:
+    enabled: false

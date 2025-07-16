@@ -1,0 +1,6 @@
+    
+    
+    
+    serviceMonitorNamespaceSelector: # {}
+      matchLabels:
+        prometheus-target: "true"

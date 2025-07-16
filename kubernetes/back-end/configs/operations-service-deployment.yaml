@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: operations-management-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: operations-management-service
+  template:
+    metadata:
+      labels:
+        app: operations-management-service
+    spec:
+      containers:
+        - name: operations-management-service
+          image: ticket-system/operations-management-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 50080
+          env:
+            - name: QUARKUS_DATASOURCE_JDBC_URL
+              value: jdbc:postgresql://postgres:5432/ticketdb
+            - name: QUARKUS_DATASOURCE_JDBC_DRIVER
+              value: org.postgresql.Driver
+            - name: QUARKUS_DATASOURCE_USERNAME
+              value: postgres
+            - name: QUARKUS_DATASOURCE_PASSWORD
+              value: yourpassword

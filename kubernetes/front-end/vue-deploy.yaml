@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vue-frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: vue-frontend
+  template:
+    metadata:
+      labels:
+        app: vue-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: freeemperor/vue-frontend:latest
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vue-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: vue-frontend
+  ports:
+    - port: 80
+      targetPort: 80

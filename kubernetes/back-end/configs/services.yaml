@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  selector:
+    app: postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-management-service
+spec:
+  selector:
+    app: order-management-service
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 50081
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: operations-management-service
+spec:
+  selector:
+    app: operations-management-service
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 50080

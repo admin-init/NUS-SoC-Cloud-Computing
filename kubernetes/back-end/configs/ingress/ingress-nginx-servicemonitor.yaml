@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ingress-nginx-monitor
+  namespace: monitoring
+spec:
+  jobLabel: nginx-ingress
+  endpoints:
+    - port: metrics-port    # 自定义端口名称，对应 Pod 上的 10254
+      path: /metrics        # 默认路径
+      interval: 15s         # 抓取频率
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ingress-nginx
+      app.kubernetes.io/component: controller
+  namespaceSelector:
+    matchNames:
+      - ingress-nginx       # Ingress 控制器所在的命名空间
