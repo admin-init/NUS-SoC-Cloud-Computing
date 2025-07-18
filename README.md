@@ -5,7 +5,7 @@ Group members:
 - [Huang](https://github.com/Heartlessandthoughtful)
 - [Liu](https://github.com/freeEmperor)
 - [Tan](https://github.com/My1106)
-- [Zhong]() 
+- [Zhong](https://github.com/admin-init) 
 
 # Kubenetes 
 
