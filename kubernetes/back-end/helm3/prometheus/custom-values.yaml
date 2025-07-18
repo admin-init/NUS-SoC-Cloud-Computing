@@ -1218,6 +1218,12 @@ grafana:
   enabled: true
   namespaceOverride: ""
 
+  grafana.ini:
+    server:
+      domain: your-ingress.example.com
+      root_url: "http://your-ingress.example.com:80/grafana/"
+      serve_from_sub_path: true
+
   ## ForceDeployDatasources Create datasource configmap even if grafana deployment has been disabled
   ##
   forceDeployDatasources: false
@@ -1300,12 +1306,12 @@ grafana:
   ingress:
     ## If true, Grafana Ingress will be created
     ##
-    enabled: false
+    enabled: true # false
 
     ## IngressClassName for Grafana Ingress.
     ## Should be provided if Ingress is enable.
     ##
-    # ingressClassName: nginx
+    ingressClassName: nginx
 
     ## Annotations for Grafana Ingress
     ##
@@ -1325,7 +1331,7 @@ grafana:
     hosts: []
 
     ## Path for grafana ingress
-    path: /
+    path: /grafana
 
     ## TLS configuration for grafana Ingress
     ## Secret must be manually created in the namespace
@@ -1467,7 +1473,7 @@ grafana:
 
     # Path to use for scraping metrics. Might be different if server.root_url is set
     # in grafana.ini
-    path: "/metrics"
+    path: /grafana/metrics # "/metrics"
 
     #  namespace: monitoring  (defaults to use the namespace this chart is deployed to)
 

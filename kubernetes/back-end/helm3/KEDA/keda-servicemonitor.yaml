@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: keda-metrics
+  namespace: monitoring
+  labels:
+    app: keda
+    release: kube-prometheus-stack
+spec:
+  jobLabel: keda
+  targetLabels:
+    - app
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: keda
+  namespaceSelector:
+    any: true
+  endpoints:
+  - port: metrics
+    interval: 10s
+    scheme: http
+    path: /metrics

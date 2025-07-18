@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-nginx-vue
+  # annotations:
+    # 不使用路径重写
+    # nginx.ingress.kubernetes.io/rewrite-target: /$2  ← 不要加这行
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: vue-service
+            port:
+              number: 80

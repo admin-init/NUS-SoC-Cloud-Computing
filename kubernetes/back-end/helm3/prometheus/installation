@@ -25,3 +25,6 @@ Access Grafana local instance:
   kubectl --namespace monitoring port-forward $POD_NAME 3000
 
 Visit https://github.com/prometheus-operator/kube-prometheus for instructions on how to create & configure Alertmanager and Prometheus instances using the Operator.
+
+
+helm upgrade -n monitoring kube-prometheus-stack prometheus-community/kube-prometheus-stack -f custom-values.yaml

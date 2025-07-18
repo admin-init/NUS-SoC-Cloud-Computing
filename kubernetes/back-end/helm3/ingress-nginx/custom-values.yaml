@@ -549,9 +549,9 @@ controller:
     enableHttps: true
     ports:
       # -- Port the external HTTP listener is published with.
-      http: 8080 # 80
+      http: 80 # 80
       # -- Port the external HTTPS listener is published with.
-      https: 8443 # 443
+      https: 443 # 443
     targetPorts:
       # -- Port of the ingress controller the external HTTP listener is mapped to.
       http: http

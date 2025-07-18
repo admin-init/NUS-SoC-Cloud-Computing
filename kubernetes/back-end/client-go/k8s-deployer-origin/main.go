@@ -14,7 +14,6 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
-	"k8s.io/apimachinery/pkg/api/errors"
 )
 
 func createDeployment(clientset *kubernetes.Clientset, name, image string, port int32) error {
@@ -38,7 +37,7 @@ func createDeployment(clientset *kubernetes.Clientset, name, image string, port 
 						{
 							Name:            name,
 							Image:           image,
-							ImagePullPolicy: corev1.PullIfNotPresent, // set imagePullPolicy
+							ImagePullPolicy: corev1.PullIfNotPresent,
 							Ports: []corev1.ContainerPort{
 								{
 									Name:          "http",
@@ -47,35 +46,39 @@ func createDeployment(clientset *kubernetes.Clientset, name, image string, port 
 								},
 							},
 							Env: []corev1.EnvVar{
+								// 数据库配置
 								{
 									Name:  "QUARKUS_DATASOURCE_JDBC_URL",
-									Value: "jdbc:postgresql://postgres-ticketdb-cluster-rw.cnpg-system.svc.cluster.local:5432/ticketdb",
+									Value: "jdbc:postgresql://postgres:5432/ticketdb",
 								},
 								{
 									Name:  "QUARKUS_DATASOURCE_JDBC_DRIVER",
 									Value: "org.postgresql.Driver",
 								},
 								{
-									Name: "QUARKUS_DATASOURCE_USERNAME",
-									ValueFrom: &corev1.EnvVarSource{
-										SecretKeyRef: &corev1.SecretKeySelector{
-											LocalObjectReference: corev1.LocalObjectReference{
-												Name: "postgres-ticketdb-cluster-app",
-											},
-											Key: "username",
-										},
-									},
+									Name:  "QUARKUS_DATASOURCE_USERNAME",
+									Value: "postgres",
 								},
 								{
-									Name: "QUARKUS_DATASOURCE_PASSWORD",
-									ValueFrom: &corev1.EnvVarSource{
-										SecretKeyRef: &corev1.SecretKeySelector{
-											LocalObjectReference: corev1.LocalObjectReference{
-												Name: "postgres-ticketdb-cluster-app",
-											},
-											Key: "password",
-										},
-									},
+									Name:  "QUARKUS_DATASOURCE_PASSWORD",
+									Value: "yourpassword",
+								},
+								// CORS 配置
+								{
+									Name:  "QUARKUS_HTTP_CORS_ORIGINS",
+									Value: "http://a73ba1d08df5f4e54beb2bb05ba0c9ff-1118012893.us-east-1.elb.amazonaws.com",
+								},
+								{
+									Name:  "QUARKUS_HTTP_CORS_METHODS",
+									Value: "GET,POST,PUT,DELETE,OPTIONS",
+								},
+								{
+									Name:  "QUARKUS_HTTP_CORS_ACCESS_CONTROL_ALLOW_HEADERS",
+									Value: "Authorization,Content-Type",
+								},
+								{
+									Name:  "quarkus.rest-client.operations-api.url",
+									Value: "http://operations-management-service.default.svc.cluster.local:8080",
 								},
 							},
 						},
@@ -85,14 +88,11 @@ func createDeployment(clientset *kubernetes.Clientset, name, image string, port 
 		},
 	}
 
-	fmt.Printf("Creating deployment %s...\n", name)
+	// 创建 Deployment
 	_, err := deploymentsClient.Create(context.TODO(), deployment, metav1.CreateOptions{})
-	if err != nil {
-		return err
-	}
-	fmt.Printf("Created deployment %s\n", name)
-	return nil
+	return err
 }
+
 
 func createService(clientset *kubernetes.Clientset, name string, targetPort, servicePort int32) error {
 	servicesClient := clientset.CoreV1().Services("default")
@@ -152,65 +152,6 @@ func deleteService(clientset *kubernetes.Clientset, name string) error {
     return nil
 }
 
-func copySecret(clientset *kubernetes.Clientset, secretName string, sourceNamespace, targetNamespace string) error {
-	// 获取源命名空间中的Secret
-	secret, err := clientset.CoreV1().Secrets(sourceNamespace).Get(context.TODO(), secretName, metav1.GetOptions{})
-	if err != nil {
-		return fmt.Errorf("failed to get secret from namespace %s: %v", sourceNamespace, err)
-	}
-
-	// 构造新的 Secret 对象
-	newSecret := &corev1.Secret{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: secretName,
-		},
-		Type: corev1.SecretTypeBasicAuth, // 显式设置类型
-		Data: secret.Data,                 // 直接复制数据
-	}
-
-	// 设置目标命名空间
-	newSecret.Namespace = targetNamespace
-
-	// 清除不允许在创建时设置的字段
-	newSecret.ResourceVersion = ""
-	newSecret.UID = ""
-	newSecret.SelfLink = ""
-	newSecret.ManagedFields = nil
-	newSecret.CreationTimestamp = metav1.Time{}
-
-	// 尝试在目标命名空间中创建或更新Secret
-	_, err = clientset.CoreV1().Secrets(targetNamespace).Create(context.TODO(), newSecret, metav1.CreateOptions{})
-	if err != nil {
-		if errors.IsAlreadyExists(err) {
-			// 如果Secret已经存在，则尝试更新它
-			_, err = clientset.CoreV1().Secrets(targetNamespace).Update(context.TODO(), newSecret, metav1.UpdateOptions{})
-			if err != nil {
-				return fmt.Errorf("failed to update secret in namespace %s: %v", targetNamespace, err)
-			}
-		} else {
-			return fmt.Errorf("failed to create secret in namespace %s: %v", targetNamespace, err)
-		}
-	}
-
-	fmt.Printf("Copied/Updated secret %s to namespace %s\n", secretName, targetNamespace)
-	return nil
-}
-
-func deleteSecret(clientset *kubernetes.Clientset, name, namespace string) error {
-	secretsClient := clientset.CoreV1().Secrets(namespace)
-
-	fmt.Printf("Deleting secret %s from namespace %s...\n", name, namespace)
-	deletePolicy := metav1.DeletePropagationForeground
-	err := secretsClient.Delete(context.TODO(), name, metav1.DeleteOptions{
-		PropagationPolicy: &deletePolicy,
-	})
-	if err != nil {
-		return fmt.Errorf("failed to delete secret %s from namespace %s: %v", name, namespace, err)
-	}
-	fmt.Printf("Deleted secret %s from namespace %s\n", name, namespace)
-	return nil
-}
-
 func int32Ptr(i int32) *int32 { return &i }
 
 func homeDir() string {
@@ -251,13 +192,6 @@ func main() {
 
 	switch *action {
 	case "create":
-		// 复制Secret到default命名空间
-		err = copySecret(clientset, "postgres-ticketdb-cluster-app", "cnpg-system", "default")
-		if err != nil {
-			panic(err.Error())
-		}
-
-		// 接下来是原有的创建Deployment和Service的逻辑...
 		// 创建 order-management-service
 		err = createDeployment(clientset, "order-management-service", "admininit/ticket-system-order-management-service:latest", 50081)
 		if err != nil {
@@ -296,13 +230,6 @@ func main() {
 		err = deleteService(clientset, "operations-management-service")
 		if err != nil {
 			panic(err.Error())
-		}
-
-		// 新增：删除Secret
-		err = deleteSecret(clientset, "postgres-ticketdb-cluster-app", "default")
-		if err != nil {
-			// Secret可能不存在，可以忽略错误或打印提示
-			fmt.Printf("Warning: failed to delete secret: %v\n", err)
 		}
 	default:
 		fmt.Println("Invalid action. Please use 'create' or 'delete'.")
