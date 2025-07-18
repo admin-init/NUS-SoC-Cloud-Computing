@@ -1,0 +1,10 @@
+helm repo add cnpg https://cloudnative-pg.github.io/charts
+
+helm upgrade --install cnpg \
+  --namespace cnpg-system \
+  --create-namespace \
+  --set config.clusterWide=false \
+  cnpg/cloudnative-pg
+
+helm upgrade --install cnpg --namespace cnpg-system --create-namespace --set config.clusterWide=false cnpg/cloudnative-pg
+kubectl apply -f postgres-ticketdb-cluster.yaml
