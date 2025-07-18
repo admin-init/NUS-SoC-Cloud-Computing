@@ -1,0 +1,4 @@
+{
+  "ticketService": "/api/ticket",
+  "orderService": "/api/order"
+}

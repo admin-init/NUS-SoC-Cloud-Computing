@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: custom-metrics-adapter-config
+  namespace: monitoring
+data:
+  rules.yaml: |
+    rules:
+      - seriesQuery: 'nginx_ingress_controller_nginx_process_requests_total'
+        resources:
+          overrides:
+            kubernetes_namespace: {resource: "namespace"}
+            kubernetes_pod_name: {resource: "pod"}
+        name:
+          as: "requests-per-second"
+        metricsQuery: "sum(rate(<<.Series>>{job=\"ingress-nginx-controller\"}[1m])) by (<<.GroupBy>>)"

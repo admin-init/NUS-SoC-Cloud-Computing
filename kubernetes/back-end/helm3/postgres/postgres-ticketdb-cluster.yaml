@@ -1,0 +1,22 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres-ticketdb-cluster
+  namespace: cnpg-system
+spec:
+  instances: 2
+
+  postgresUID: 0
+  postgresGID: 0
+
+  storage:
+    size: 1Gi
+    storageClass: hostpath
+
+  bootstrap:
+    initdb:
+      database: ticketdb
+
+  monitoring:
+    enablePodMonitor: true

@@ -1,0 +1,13 @@
+    
+    
+    
+    serviceMonitorNamespaceSelector: # {}
+      matchLabels:
+        prometheus-target: "true"
+
+
+    grafana.ini:
+      server:
+        domain: your-ingress.example.com
+        root_url: "http://your-ingress.example.com:80/grafana/"
+        serve_from_sub_path: true

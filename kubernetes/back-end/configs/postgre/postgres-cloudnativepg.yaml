@@ -1,0 +1,97 @@
+# 1. Install CloudNativePG Operator (run these commands first)
+# kubectl apply -f https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.21/releases/cnpg-1.21.0.yaml
+
+# 2. Create a Secret for PostgreSQL credentials
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-credentials
+  labels:
+    app: postgres
+type: Opaque
+data:
+  username: cG9zdGdyZXM=  # base64 encoded 'postgres'
+  password: eW91cnBhc3N3b3Jk  # base64 encoded 'yourpassword'
+
+# 3. CloudNativePG Cluster Resource
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres-cluster
+  labels:
+    app: postgres
+spec:
+  instances: 1
+  
+  # PostgreSQL configuration
+  postgresql:
+    parameters:
+      max_connections: "100"
+      shared_buffers: "256MB"
+      effective_cache_size: "1GB"
+      
+  # Bootstrap configuration
+  bootstrap:
+    initdb:
+      database: ticketdb
+      owner: postgres
+      secret:
+        name: postgres-credentials
+      # Additional databases can be created here
+      postInitSQL:
+        - CREATE DATABASE IF NOT EXISTS ticketdb;
+
+  # Storage configuration
+  storage:
+    size: 1Gi
+    storageClass: standard  # Use your cluster's default storage class
+    
+  # Monitoring is automatically enabled by default
+  # No explicit monitoring configuration needed
+    
+  # Backup configuration (optional)
+  # backup:
+  #   retentionPolicy: "30d"
+  #   barmanObjectStore:
+  #     destinationPath: "s3://your-backup-bucket/postgres"
+  #     serverName: "postgres-cluster"
+  #     wal:
+  #       retention: "7d"
+
+# 4. Service to expose PostgreSQL (similar to your current service)
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  labels:
+    app: postgres
+spec:
+  selector:
+    postgresql: postgres-cluster
+    role: primary
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP
+
+# 5. Optional: Create a read-only service for read replicas
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-read
+  labels:
+    app: postgres
+spec:
+  selector:
+    postgresql: postgres-cluster
+    role: replica
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP

@@ -1,0 +1,343 @@
+---
+# Source: prometheus-adapter/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+automountServiceAccountToken: true
+metadata:
+  labels:    
+    helm.sh/chart: prometheus-adapter-4.14.1
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: metrics
+    app.kubernetes.io/part-of: prometheus-adapter
+    app.kubernetes.io/name: prometheus-adapter
+    app.kubernetes.io/instance: my-release
+    app.kubernetes.io/version: "v0.12.0"
+  name: my-release-prometheus-adapter
+  namespace: monitoring
+---
+# Source: prometheus-adapter/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-release-prometheus-adapter
+  namespace: monitoring
+  labels:    
+    helm.sh/chart: prometheus-adapter-4.14.1
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: metrics
+    app.kubernetes.io/part-of: prometheus-adapter
+    app.kubernetes.io/name: prometheus-adapter
+    app.kubernetes.io/instance: my-release
+    app.kubernetes.io/version: "v0.12.0"
+data:
+  config.yaml: |
+    rules:
+    - metricsQuery: |
+        rate(<<.Series>>{<<.LabelMatchers>>, container="controller"}[2m])
+      name:
+        as: nginx_requests
+      resources:
+        overrides:
+          namespace:
+            resource: namespace
+          pod:
+            resource: pod
+      seriesQuery: '{__name__="nginx_ingress_controller_nginx_process_requests_total",
+        container="controller"}'
+    - metricsQuery: |-
+        sum(rate(nginx_ingress_controller_nginx_process_requests_total{container="controller"}[2m]))
+        by (service)
+      name:
+        as: http_requests_per_second
+      resources:
+        template:
+        - label: service
+          resource: service
+      seriesQuery: '{__name__="nginx_ingress_controller_nginx_process_requests_total",
+        container="controller"}'
+---
+# Source: prometheus-adapter/templates/cluster-role-resource-reader.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:    
+    helm.sh/chart: prometheus-adapter-4.14.1
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: metrics
+    app.kubernetes.io/part-of: prometheus-adapter
+    app.kubernetes.io/name: prometheus-adapter
+    app.kubernetes.io/instance: my-release
+    app.kubernetes.io/version: "v0.12.0"
+  name: prometheus-adapter-resource-reader
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - namespaces
+  - pods
+  - services
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+---
+# Source: prometheus-adapter/templates/custom-metrics-cluster-role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:    
+    helm.sh/chart: prometheus-adapter-4.14.1
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: metrics
+    app.kubernetes.io/part-of: prometheus-adapter
+    app.kubernetes.io/name: prometheus-adapter
+    app.kubernetes.io/instance: my-release
+    app.kubernetes.io/version: "v0.12.0"
+  name: prometheus-adapter-server-resources
+rules:
+- apiGroups:
+  - custom.metrics.k8s.io
+  resources: 
+  - '*'
+  verbs: ["*"]
+---
+# Source: prometheus-adapter/templates/cluster-role-binding-auth-delegator.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:    
+    helm.sh/chart: prometheus-adapter-4.14.1
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: metrics
+    app.kubernetes.io/part-of: prometheus-adapter
+    app.kubernetes.io/name: prometheus-adapter
+    app.kubernetes.io/instance: my-release
+    app.kubernetes.io/version: "v0.12.0"
+  name: prometheus-adapter-system-auth-delegator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:auth-delegator
+subjects:
+- kind: ServiceAccount
+  name: my-release-prometheus-adapter
+  namespace: "monitoring"
+---
+# Source: prometheus-adapter/templates/cluster-role-binding-resource-reader.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:    
+    helm.sh/chart: prometheus-adapter-4.14.1
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: metrics
+    app.kubernetes.io/part-of: prometheus-adapter
+    app.kubernetes.io/name: prometheus-adapter
+    app.kubernetes.io/instance: my-release
+    app.kubernetes.io/version: "v0.12.0"
+  name: prometheus-adapter-resource-reader
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: prometheus-adapter-resource-reader
+subjects:
+- kind: ServiceAccount
+  name: my-release-prometheus-adapter
+  namespace: "monitoring"
+---
+# Source: prometheus-adapter/templates/custom-metrics-cluster-role-binding-hpa.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:    
+    helm.sh/chart: prometheus-adapter-4.14.1
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: metrics
+    app.kubernetes.io/part-of: prometheus-adapter
+    app.kubernetes.io/name: prometheus-adapter
+    app.kubernetes.io/instance: my-release
+    app.kubernetes.io/version: "v0.12.0"
+  name: prometheus-adapter-hpa-controller
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: prometheus-adapter-server-resources
+subjects:
+- kind: ServiceAccount
+  name: my-release-prometheus-adapter
+  namespace: "monitoring"
+---
+# Source: prometheus-adapter/templates/role-binding-auth-reader.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:    
+    helm.sh/chart: prometheus-adapter-4.14.1
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: metrics
+    app.kubernetes.io/part-of: prometheus-adapter
+    app.kubernetes.io/name: prometheus-adapter
+    app.kubernetes.io/instance: my-release
+    app.kubernetes.io/version: "v0.12.0"
+  name: prometheus-adapter-auth-reader
+  namespace: kube-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: extension-apiserver-authentication-reader
+subjects:
+- kind: ServiceAccount
+  name: my-release-prometheus-adapter
+  namespace: "monitoring"
+---
+# Source: prometheus-adapter/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:    
+    helm.sh/chart: prometheus-adapter-4.14.1
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: metrics
+    app.kubernetes.io/part-of: prometheus-adapter
+    app.kubernetes.io/name: prometheus-adapter
+    app.kubernetes.io/instance: my-release
+    app.kubernetes.io/version: "v0.12.0"
+  name: my-release-prometheus-adapter
+  namespace: monitoring
+spec:
+  ports:
+  - port: 443
+    name: https
+    protocol: TCP
+    targetPort: https
+  selector:    
+    app.kubernetes.io/name: prometheus-adapter
+    app.kubernetes.io/instance: my-release
+  type: ClusterIP
+---
+# Source: prometheus-adapter/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:    
+    helm.sh/chart: prometheus-adapter-4.14.1
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: metrics
+    app.kubernetes.io/part-of: prometheus-adapter
+    app.kubernetes.io/name: prometheus-adapter
+    app.kubernetes.io/instance: my-release
+    app.kubernetes.io/version: "v0.12.0"
+  name: my-release-prometheus-adapter
+  namespace: monitoring
+spec:
+  replicas: 1
+  strategy: 
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  selector:
+    matchLabels:      
+      app.kubernetes.io/name: prometheus-adapter
+      app.kubernetes.io/instance: my-release
+  template:
+    metadata:
+      labels:        
+        helm.sh/chart: prometheus-adapter-4.14.1
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/component: metrics
+        app.kubernetes.io/part-of: prometheus-adapter
+        app.kubernetes.io/name: prometheus-adapter
+        app.kubernetes.io/instance: my-release
+        app.kubernetes.io/version: "v0.12.0"
+      name: prometheus-adapter
+      annotations:
+        checksum/config: 16a6e248f6bbdfe1ace103fc966aac0089dd6b9b5cefacda2bcd3f89a8266b54
+    spec:
+      automountServiceAccountToken: true
+      serviceAccountName: my-release-prometheus-adapter
+      containers:
+      - name: prometheus-adapter
+        image: "registry.k8s.io/prometheus-adapter/prometheus-adapter:v0.12.0"
+        imagePullPolicy: IfNotPresent
+        args:
+        - /adapter
+        - --secure-port=6443
+        - --cert-dir=/tmp/cert
+        - --prometheus-url=http://prometheus-service.monitoring.svc.cluster.local:9090
+        - --metrics-relist-interval=1m
+        - --v=5
+        - --config=/etc/adapter/config.yaml
+        ports:
+        - containerPort: 6443
+          name: https
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: https
+            scheme: HTTPS
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: https
+            scheme: HTTPS
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 10001
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+        - mountPath: /etc/adapter/
+          name: config
+          readOnly: true
+        - mountPath: /tmp
+          name: tmp
+      nodeSelector:
+        {}
+      affinity:
+        {}
+      topologySpreadConstraints:
+        []
+      securityContext:
+        fsGroup: 10001
+      tolerations:
+        []
+      volumes:
+      - name: config
+        configMap:
+          name: my-release-prometheus-adapter
+      - name: tmp
+        emptyDir: {}
+---
+# Source: prometheus-adapter/templates/custom-metrics-apiservice.yaml
+apiVersion: apiregistration.k8s.io/v1beta1
+kind: APIService
+metadata:
+  labels:    
+    helm.sh/chart: prometheus-adapter-4.14.1
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: metrics
+    app.kubernetes.io/part-of: prometheus-adapter
+    app.kubernetes.io/name: prometheus-adapter
+    app.kubernetes.io/instance: my-release
+    app.kubernetes.io/version: "v0.12.0"
+  name: v1beta1.custom.metrics.k8s.io
+spec:
+  service:
+    name: my-release-prometheus-adapter
+    namespace: "monitoring"
+  group: custom.metrics.k8s.io
+  version: v1beta1
+  insecureSkipTLSVerify: true
+  groupPriorityMinimum: 100
+  versionPriority: 100
