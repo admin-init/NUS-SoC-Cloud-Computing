@@ -15,7 +15,7 @@ services:
       - app_network
 
   order-management-service:
-    image: admininit/ticket-system-order-management-service
+    image: admininit/ticket-system-order-management-service:latest
     container_name: order-service
     depends_on:
       - postgres
@@ -32,7 +32,7 @@ services:
       - app_network
 
   operations-management-service:
-    image: admininit/ticket-system-operations-management-service
+    image: admininit/ticket-system-operations-management-service:latest
     container_name: operations-service
     depends_on:
       - postgres
