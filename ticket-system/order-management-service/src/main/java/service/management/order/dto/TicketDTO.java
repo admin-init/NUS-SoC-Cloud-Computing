@@ -1,6 +1,9 @@
 // src/main/java/com/example/order/dto/
 package service.management.order.dto;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
 public class TicketDTO {
 
     private Long id;

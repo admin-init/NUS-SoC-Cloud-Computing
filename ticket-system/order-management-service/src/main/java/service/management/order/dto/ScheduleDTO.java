@@ -1,8 +1,10 @@
 // src/main/java/com/example/order/dto/
 package service.management.order.dto;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import java.time.LocalDateTime;
 
+@RegisterForReflection
 public class ScheduleDTO {
 
     private Long id;
