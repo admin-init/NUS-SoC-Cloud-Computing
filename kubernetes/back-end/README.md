@@ -51,7 +51,7 @@ delete using `--action=delete`:
 go run main.go --action=delete
 ```
 
-## helm3
+## Helm3
 
 ### Install Prometheus
 
@@ -132,4 +132,11 @@ helm repo update
 then install into namespace ingress-nginx with customed `values.yaml`:
 ```bash
 helm install keda kedacore/keda --namespace keda --create-namespace -f custom-values.yaml
+```
+
+## Delpoy ingress
+
+First `cd kubernetes/back-end/configs/ingress`.
+```bash
+kubectl apply -f ingress-nginx-default.yaml
 ```
