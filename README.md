@@ -1,6 +1,11 @@
 # NUS-SoC-Cloud-Computing
 This repository is for ***GROUP PROJECT*** of NUS-SoC-Cloud-Computing-Course using.
 
+Group members:
+- [Huang](https://github.com/Heartlessandthoughtful)
+- [Liu](https://github.com/freeEmperor)
+- [Tan](https://github.com/My1106)
+- [Zhong]() 
 
 # Kubenetes 
 
