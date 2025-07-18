@@ -54,20 +54,20 @@ const bookTicket = async (ticket) => {
         ElMessage.warning('Please log in first.')
         return
     }
-    console.log('Booking ticket:', ticket)
+    console.log(ticket)
     try {
         const result = await ticketAPI.bookTicket({
             userId: 1,
             ticketId: ticket.ticketId
         })
 
-        console.log('Booking result:', result)
+        console.log('Book result:', result)
         if (!result) {
             ElMessage.error('Booking failed, please try again later.')
             return
         }
 
-        if (result.data != 'Order Created Successfully') {
+        if (result != 'Order Created Successfully') {
             ElMessage.error('No available tickets left.')
             return
         }
