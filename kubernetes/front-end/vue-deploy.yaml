@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: vue-frontend
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: vue-frontend
@@ -20,19 +20,20 @@ spec:
         resources:
           requests:
             memory: "128Mi"
-            cpu: "200m"
+            cpu: "100m"
           limits:
             memory: "256Mi"
-            cpu: "400m"
+            cpu: "200m"
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: vue-service
 spec:
-  type: LoadBalancer
+  type: NodePort   # 改成 NodePort
   selector:
     app: vue-frontend
   ports:
-    - port: 80
-      targetPort: 80
+    - protocol: TCP
+      port: 80       # Service 内部端口（集群内访问）
+      targetPort: 80 # 容器监听的端口
