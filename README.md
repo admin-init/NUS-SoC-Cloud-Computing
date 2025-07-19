@@ -7,7 +7,7 @@ Group members:
 - [Tan](https://github.com/My1106)
 - [Zhong](https://github.com/admin-init) 
 
-# Kubenetes 
+# Kubernetes 
 
 ## Back-end deployment
 refering to [Back-end deployment](./kubernetes/back-end/README.md)
