@@ -134,6 +134,10 @@ then install into namespace ingress-nginx with customed `values.yaml`:
 helm install keda kedacore/keda --namespace keda --create-namespace -f custom-values.yaml
 ```
 
+Rember to apply scaledobject by:
+```bash
+kubectl apply -f <service>-scaledobject.yaml
+```
 ## Delpoy ingress
 
 First `cd kubernetes/back-end/configs/ingress`.
