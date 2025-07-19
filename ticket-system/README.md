@@ -61,8 +61,8 @@ docker cp ticket-postgres:/tmp/public_schema.sql ./public_schema.sql
 
 ## Insert Test Data
 
-[DB init of operations-service](./operations-management-service/src/main/resources/import.sql)
-[DB init of order-srvice](./order-management-service/src/main/resources/import.sql)
+- [DB init of operations-service](./operations-management-service/src/main/resources/import.sql)
+- [DB init of order-srvice](./order-management-service/src/main/resources/import.sql)
 
 ---
 
